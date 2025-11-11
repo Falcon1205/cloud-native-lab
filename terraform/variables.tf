@@ -42,6 +42,7 @@ variable "gateway" {
 variable "ssh_key" {
   description = "Public SSH key"
   type        = string
+  default     = "~/.ssh/id_ed25519.pub"
 }
 
 ###############################################

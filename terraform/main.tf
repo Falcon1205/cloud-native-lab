@@ -24,6 +24,12 @@ locals {
     }
 }
 
+# Klucze SSH
+resource "local_file" "ssh_public_key" {
+  content  = file(var.ssh_key)
+  filename = "${path.module}/id_rsa.pub"
+}
+
 # Tworzenie  zasobów
 resource "proxmox_virtual_environment_vm" "k3s_nodes" {
   for_each = local.vm_config
