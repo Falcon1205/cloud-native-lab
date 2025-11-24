@@ -1,0 +1,44 @@
+- name: Prepare nodes for k3s installation
+  hosts: k3s
+  become: true
+
+  tasks:
+
+    - name: Update APT cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Upgrade all packages
+      ansible.builtin.apt:
+        upgrade: dist
+        autoremove: true
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name:
+          - curl
+        state: present
+
+    - name: Disable swap (runtime)
+      ansible.builtin.command: swapoff -a
+      when: ansible_swaptotal_mb > 0
+      become: yes
+
+    - name: Comment out swap entry in /etc/fstab
+      ansible.builtin.replace:
+        path: /etc/fstab
+        regexp: '^\s*([^#]\S*\s+)\S+\s+swap\s+'
+        replace: '# \1 none swap '
+      notify: Remount filesystems
+      become: yes
+
+    - name: Ensure no active swap device is configured
+      ansible.posix.mount:
+        name: swap
+        fstype: swap
+        state: absent
+      become: yes
+
+  handlers:
+    - name: Remount filesystems
+      ansible.builtin.command: mount -a  # noqa: command-instead-of-module
