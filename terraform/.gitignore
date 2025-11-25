@@ -1,5 +1,0 @@
-terraform.tfvars
-*.tfstate
-.terraform/
-*.tfstate.backup
-inventory.ini

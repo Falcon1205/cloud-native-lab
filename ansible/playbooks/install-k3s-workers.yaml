@@ -1,0 +1,24 @@
+- name: Install K3s workers
+  hosts: k3s-workers
+  become: true
+
+  vars:
+    k3s_token: "{{ lookup('file', './k3s-node-token.txt') }}"
+    k3s_server_url: "https://{{ k3s_server_ip }}:6443"
+
+  tasks:
+    - name: Download K3s installer
+      ansible.builtin.get_url:
+        url: https://get.k3s.io
+        dest: /tmp/k3s-install.sh
+        mode: "0755"
+
+    - name: Install K3s worker
+      ansible.builtin.command: >
+        sh /tmp/k3s-install.sh
+      args:
+        creates: /usr/local/bin/k3s-agent
+      environment:
+        INSTALL_K3S_VERSION: "{{ k3s_version }}"
+        K3S_URL: "https://{{ k3s_server_ip }}:6443"
+        K3S_TOKEN: "{{ k3s_token }}"

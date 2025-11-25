@@ -1,0 +1,16 @@
+# Ansible sensitive files
+ansible/inventory/*
+!ansible/inventory/.gitkeep
+
+# Python virtual env
+venv/
+__pycache__/
+
+# VSCode
+.vscode/
+
+# Terraform
+terraform/.terraform*
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/.terraform.lock.hcl

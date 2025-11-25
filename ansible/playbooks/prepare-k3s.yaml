@@ -22,7 +22,7 @@
     - name: Disable swap (runtime)
       ansible.builtin.command: swapoff -a
       when: ansible_swaptotal_mb > 0
-      become: yes
+      become: true
 
     - name: Comment out swap entry in /etc/fstab
       ansible.builtin.replace:
@@ -30,14 +30,14 @@
         regexp: '^\s*([^#]\S*\s+)\S+\s+swap\s+'
         replace: '# \1 none swap '
       notify: Remount filesystems
-      become: yes
+      become: true
 
     - name: Ensure no active swap device is configured
       ansible.posix.mount:
         name: swap
         fstype: swap
         state: absent
-      become: yes
+      become: true
 
   handlers:
     - name: Remount filesystems
